@@ -1,5 +1,6 @@
 package challenge.service.impl;
 
+import challenge.domain.User;
 import challenge.dto.FollowerDto;
 import challenge.dto.FollowingResponseDto;
 import challenge.repository.FollowRepository;
@@ -22,40 +23,52 @@ public class FollowServiceImpl implements FollowService {
     private UserRepository userRepository;
 
     @Override
-    public FollowingResponseDto getFollowerList(long userId, String username) {
-        return createUserList(true, userId, username);
+    public FollowingResponseDto getFollowerList(User user) {
+        return createUserList(true, user);
     }
 
     @Override
-    public FollowingResponseDto getFollowingList(long userId, String username) {
-        return createUserList(false, userId, username);
+    public FollowingResponseDto getFollowingList(User user) {
+        return createUserList(false, user);
     }
 
     @Override
-    public FollowingResponseDto unfollowUser(String username, long userId, long unfollowUserId) {
-        if (followRepository.unfollowUser(userId, unfollowUserId)) {
-            return getFollowingList(userId, username);
+    public FollowingResponseDto unfollowUser(User user, long unfollowUserId) {
+        if (followRepository.unfollowUser(user.getId(), unfollowUserId)) {
+            return getFollowingList(user);
         }
-        return getFollowerList(userId, username);
+        return getFollowerList(user);
     }
 
     @Override
-    public FollowingResponseDto followUser(String username, long userId, long followUserId) {
-        if (followRepository.followUser(userId, followUserId)) {
-            return getFollowingList(userId, username);
+    public FollowingResponseDto followUser(User user, long followUserId) {
+        if (followRepository.followUser(user.getId(), followUserId)) {
+            return getFollowingList(user);
         }
-        return getFollowerList(userId, username);
+        return getFollowerList(user);
     }
 
-    private FollowingResponseDto createUserList(boolean isFollowerList, long userId, String username) {
+    private int shortestWay(long userId, long otherUserId){
+        boolean findUser=false;
+
+        while (!findUser){
+
+        }
+
+
+        return 0;
+    }
+
+
+    private FollowingResponseDto createUserList(boolean isFollowerList, User user) {
         FollowingResponseDto followingResponseDto = new FollowingResponseDto();
         List<FollowerDto> followerDtoList;
         if (isFollowerList) {
-            followerDtoList = followRepository.findFollowersByUser(userId);
-            followingResponseDto.setTitle(username + " followers");
+            followerDtoList = followRepository.findFollowersByUser(user.getId());
+            followingResponseDto.setTitle(user.getUsername() + " followers");
         } else {
-            followerDtoList = followRepository.findFollowingUserListByUser(userId);
-            followingResponseDto.setTitle(username + " following list");
+            followerDtoList = followRepository.findFollowingUserListByUser(user.getId());
+            followingResponseDto.setTitle(user.getUsername() + " following list");
         }
         followingResponseDto.setFollowerList(followerDtoList);
         return followingResponseDto;

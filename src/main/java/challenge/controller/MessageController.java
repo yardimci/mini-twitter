@@ -8,9 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -25,28 +25,19 @@ public class MessageController {
     @Autowired
     private MessageService messageService;
 
-    //for all messages
-    @RequestMapping(value = "/message", method = RequestMethod.GET)
-    public ResponseEntity<List<MessageResponseDto>> getMessageByUser() {
-        return messageList(null);
-    }
 
-    @RequestMapping(value = "/message/{keyword}", method = RequestMethod.GET)
-    public ResponseEntity<List<MessageResponseDto>> getMessageByUserAndKeyword(@PathVariable(value = "keyword") String keyword) {
-        return  messageList(keyword);
-    }
-
-    public ResponseEntity messageList(String keyword){
+    @RequestMapping(value = "/message", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getMessageByUser(@RequestParam(value="search", required = false) String search) {
         String username = getUsernameFromAuthentication();
         Long userId = userRepository.findByUsername(username).getId();
-        List<MessageResponseDto> messageResponseDtoList =messageService.findMessageListByUser(userId, keyword);
+        List<MessageResponseDto> messageResponseDtoList =messageService.findMessageListByUser(userId, search);
         if(!messageResponseDtoList.isEmpty()){
             return new ResponseEntity<>(messageResponseDtoList, HttpStatus.OK);
         }
         if(messageResponseDtoList.isEmpty()){
-            return new ResponseEntity<>("no related message with this user", HttpStatus.OK);
+            return new ResponseEntity<String>("no related message with this user", HttpStatus.OK);
         }
-        return new ResponseEntity<>("", HttpStatus.BAD_GATEWAY);
+        return new ResponseEntity<String>("Bad Gateway", HttpStatus.BAD_GATEWAY);
     }
 
 

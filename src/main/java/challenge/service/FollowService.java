@@ -1,12 +1,13 @@
 package challenge.service;
 
+import challenge.domain.User;
 import challenge.dto.FollowingResponseDto;
 
 public interface FollowService {
 
-    FollowingResponseDto getFollowerList(long userId, String username);
-    FollowingResponseDto getFollowingList(long userId, String username);
-    FollowingResponseDto unfollowUser(String username, long userId, long unfollowUserId);
-    FollowingResponseDto followUser(String username, long userId, long followUserId);
+    FollowingResponseDto getFollowerList(User user);
+    FollowingResponseDto getFollowingList(User user);
+    FollowingResponseDto unfollowUser(User user, long unfollowUserId);
+    FollowingResponseDto followUser(User user, long followUserId);
 
 }

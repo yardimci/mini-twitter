@@ -1,5 +1,6 @@
 package challenge.controller;
 
+import challenge.domain.User;
 import challenge.dto.FollowingResponseDto;
 import challenge.service.FollowService;
 import challenge.service.UserService;
@@ -20,42 +21,43 @@ public class FollowingController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = "/followers", method = RequestMethod.GET)
+    @RequestMapping(value = "/followers", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<FollowingResponseDto> getMessageByUser() {
-         String username = getUsernameFromAuthentication();
-         long id = userService.findByUsername(username).getId();
-
-        if(username!=null){
-            return new ResponseEntity<>(followService.getFollowerList(id, username), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_GATEWAY);
-    }
-
-
-
-    @RequestMapping(value = "/followingList", method = RequestMethod.GET)
-    public ResponseEntity<FollowingResponseDto> getFollowingList() {
-         String username = getUsernameFromAuthentication();
-         long id = userService.findByUsername(username).getId();
-
-        if(username!=null){
-            return new ResponseEntity<>(followService.getFollowingList(id, username), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_GATEWAY);
-    }
-
-    @RequestMapping(value = "/unfollow/{unfollowUserId}", method = RequestMethod.PUT)
-    public @ResponseBody ResponseEntity unfollowUser(@PathVariable long unfollowUserId) {
-         String username = getUsernameFromAuthentication();
-        long id = userService.findByUsername(username).getId();
-        return new ResponseEntity<>(followService.unfollowUser(username, id, unfollowUserId), HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/follow/{followUserId}", method = RequestMethod.PUT)
-    public @ResponseBody ResponseEntity followUser(@PathVariable long followUserId) {
         String username = getUsernameFromAuthentication();
-        long id = userService.findByUsername(username).getId();
-        return new ResponseEntity<>(followService.followUser(username, id, followUserId), HttpStatus.OK);
+        User user = userService.findByUsername(username);
+
+        if (username != null) {
+            return new ResponseEntity<>(followService.getFollowerList(user), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_GATEWAY);
+    }
+
+
+    @RequestMapping(value = "/followingList", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<FollowingResponseDto> getFollowingList() {
+        String username = getUsernameFromAuthentication();
+        User user = userService.findByUsername(username);
+
+        if (username != null) {
+            return new ResponseEntity<>(followService.getFollowingList(user), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_GATEWAY);
+    }
+
+    @RequestMapping(value = "/unfollow/{unfollowUserId}", method = RequestMethod.PUT, produces = "application/json")
+    public @ResponseBody
+    ResponseEntity unfollowUser(@PathVariable long unfollowUserId) {
+        String username = getUsernameFromAuthentication();
+        User user = userService.findByUsername(username);
+        return new ResponseEntity<>(followService.unfollowUser(user, unfollowUserId), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/follow/{followUserId}", method = RequestMethod.PUT, produces = "application/json")
+    public @ResponseBody
+    ResponseEntity followUser(@PathVariable long followUserId) {
+        String username = getUsernameFromAuthentication();
+        User user = userService.findByUsername(username);
+        return new ResponseEntity<>(followService.followUser(user, followUserId), HttpStatus.OK);
     }
 
     public String getUsernameFromAuthentication() {
