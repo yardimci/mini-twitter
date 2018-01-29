@@ -26,10 +26,11 @@ public class FollowingController {
         String username = getUsernameFromAuthentication();
         User user = userService.findByUsername(username);
 
-        if (username != null) {
-            return new ResponseEntity<>(followService.getFollowerList(user), HttpStatus.OK);
+        if (username == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_GATEWAY);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_GATEWAY);
+        // default donus happy path olmali
+        return new ResponseEntity<>(followService.getFollowerList(user), HttpStatus.OK);
     }
 
 
@@ -49,6 +50,7 @@ public class FollowingController {
     ResponseEntity unfollowUser(@PathVariable long unfollowUserId) {
         String username = getUsernameFromAuthentication();
         User user = userService.findByUsername(username);
+        // burda user null olamaz mi ?
         return new ResponseEntity<>(followService.unfollowUser(user, unfollowUserId), HttpStatus.OK);
     }
 
@@ -57,6 +59,7 @@ public class FollowingController {
     ResponseEntity followUser(@PathVariable long followUserId) {
         String username = getUsernameFromAuthentication();
         User user = userService.findByUsername(username);
+        // burda user null olamaz mi ?
         return new ResponseEntity<>(followService.followUser(user, followUserId), HttpStatus.OK);
     }
 
