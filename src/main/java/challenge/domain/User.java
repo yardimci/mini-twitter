@@ -6,6 +6,7 @@ import lombok.*;
 @Setter
 @ToString
 @EqualsAndHashCode
+//@Data var hepsini kapsiyor
 public class User {
     private @NonNull Long id;
     private @NonNull String username;
