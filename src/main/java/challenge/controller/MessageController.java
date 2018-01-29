@@ -27,6 +27,9 @@ public class MessageController {
 
 
     @RequestMapping(value = "/message", method = RequestMethod.GET, produces = "application/json")
+    //QueryParam diye bir annot yokmu parametreyi direk oyle alsan. 
+    //query key'i anlamli olmali,sentBy gibi
+    // buralarda da default donus happy path olmali
     public ResponseEntity<?> getMessageByUser(@RequestParam(value="search", required = false) String search) {
         String username = getUsernameFromAuthentication();
         Long userId = userRepository.findByUsername(username).getId();
